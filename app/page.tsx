@@ -171,7 +171,8 @@ export default function Home() {
           fetchPriority="high"
           className="-z-10 object-cover"
         />
-        <div className="absolute inset-0 -z-10 bg-linear-to-b from-black/55 via-black/15 to-black/75" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-b from-black/50 via-black/35 to-black/80" />
+        <div className="absolute inset-0 -z-10 hidden bg-linear-to-r from-black/60 via-black/20 to-transparent md:block" />
 
         <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
           <a href="#" className="font-serif text-xl tracking-wide">
@@ -194,8 +195,8 @@ export default function Home() {
           </a>
         </nav>
 
-        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-5 pb-10 sm:px-8 sm:pb-16">
-          <p className="text-sm tracking-[0.25em] text-white/80 uppercase">Private Pool Villa · Hua Hin</p>
+        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-5 pb-10 text-shadow-lg sm:px-8 sm:pb-16">
+          <p className="text-sm tracking-[0.25em] text-white/90 uppercase">Private Pool Villa · Hua Hin</p>
           <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-tight sm:text-6xl sm:leading-tight">
             บ้านริมทะเล
             <br />
@@ -205,7 +206,7 @@ export default function Home() {
             สระส่วนตัว ลาน BBQ และชายหาดที่เดินถึงในสามนาที สำหรับครอบครัวและเพื่อนสูงสุด 8 ท่าน
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#contact" className="rounded-full bg-sand-50 px-6 py-3 font-medium text-sea-900 hover:bg-white">
+            <a href="#contact" className="rounded-full bg-sand-50 px-6 py-3 font-medium text-sea-900 text-shadow-none hover:bg-white">
               จองผ่าน LINE
             </a>
             <a href="#rates" className="rounded-full px-6 py-3 ring-1 ring-white/50 hover:bg-white/10">
@@ -267,7 +268,7 @@ export default function Home() {
 
         <section id="gallery" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 md:py-28">
           <Heading eyebrow="แกลเลอรี" title="มุมโปรดของแขกที่มาพัก" />
-          <div className="mt-12 grid auto-rows-[11rem] grid-cols-2 gap-3 sm:auto-rows-[16rem] md:grid-cols-3 md:gap-4">
+          <div className="mt-12 grid auto-rows-44 grid-cols-2 gap-3 sm:auto-rows-64 md:grid-cols-3 md:gap-4">
             <Shot src={living} alt="ห้องนั่งเล่นเปิดโล่ง ประตูกระจกบานใหญ่ต่อกับสระ" caption="ห้องนั่งเล่น" className="col-span-2" />
             <Shot src={dining} alt="ศาลากลางแจ้งมีโต๊ะไม้แปดที่นั่งและไฟประดับยามค่ำ" caption="ลาน BBQ ยามค่ำ" className="row-span-2" />
             <Shot src={bedroom} alt="ห้องนอนใหญ่ เตียงคิงไซซ์ผ้าปูสีขาว หัวเตียงไม้สัก" caption="ห้องนอนใหญ่" />
