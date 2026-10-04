@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Saeng Lay Pool Villa (เว็บตัวอย่าง)
 
-## Getting Started
+Landing page ของ pool villa ในหัวหิน ทำเป็น portfolio **ที่พักนี้ไม่มีอยู่จริง** และรูปภาพสร้างด้วย AI
 
-First, run the development server:
+- Next.js 16 (App Router) + Tailwind CSS 4 + TypeScript
+- static export (`output: "export"`): build แล้วได้โฟลเดอร์ `out/` เป็นไฟล์ static วางบน host แบบ static ที่ไหนก็ได้
+- ไม่มี client component (`"use client"`): FAQ เปิดปิดด้วย `<details>` ของ HTML ไม่ต้องเขียน JS เอง
+- ฟอนต์ IBM Plex Sans Thai + Noto Serif Thai ผ่าน `next/font`
+- รูป import แบบ static: ถ้าขาดไฟล์ไหน build จะ fail และได้ blur placeholder มาฟรี
+
+## รัน
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build   # ได้ out/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## เปลี่ยนรูป
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+ดู [IMAGE-PROMPTS.md](IMAGE-PROMPTS.md) แล้ววางไฟล์ทับใน `images/` โดยใช้ชื่อเดิม
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## เปลี่ยนข้อมูล
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+เนื้อหาทั้งหมดอยู่ใน array ด้านบนของ [app/page.tsx](app/page.tsx) (ราคา ห้อง FAQ ระยะทาง) ส่วน LINE ID และเบอร์โทรอยู่ใน `LINE_ID` / `PHONE`
