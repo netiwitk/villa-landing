@@ -382,7 +382,6 @@ export default function Home() {
       <footer className="bg-sea-900 text-sand-200">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-8 text-sm sm:flex-row sm:justify-between sm:px-8">
           <p className="font-serif text-base text-sand-50">Saeng Lay Pool Villa</p>
-          <p>เว็บตัวอย่างสำหรับ portfolio ไม่ใช่ที่พักจริง · รูปภาพสร้างด้วย AI</p>
         </div>
       </footer>
     </>
