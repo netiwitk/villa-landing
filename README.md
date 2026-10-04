@@ -2,6 +2,8 @@
 
 Landing page ของ pool villa ในหัวหิน ทำเป็น portfolio **ที่พักนี้ไม่มีอยู่จริง** และรูปภาพสร้างด้วย AI
 
+**เว็บจริง:** https://netiwitk.github.io/villa-landing/ ([English](https://netiwitk.github.io/villa-landing/en/) · [ไทย](https://netiwitk.github.io/villa-landing/th/))
+
 - Next.js 16 (App Router) + Tailwind CSS 4 + TypeScript
 - static export (`output: "export"`): build แล้วได้โฟลเดอร์ `out/` เป็นไฟล์ static วางบน host แบบ static ที่ไหนก็ได้
 - 2 ภาษา (ไทย/อังกฤษ) เป็นหน้า static แยกกันที่ `/th/` และ `/en/` หน้าแรก `/` ดูภาษาของเครื่องผู้เข้าชม ถ้าเป็นไทยจะพาไปหน้าไทย ภาษาอื่นไปหน้าอังกฤษ และมีปุ่มสลับภาษาที่มุมบน
