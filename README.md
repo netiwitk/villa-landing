@@ -18,7 +18,7 @@ npm run build   # ได้ out/
 
 ## เปลี่ยนรูป
 
-ดู [IMAGE-PROMPTS.md](IMAGE-PROMPTS.md) แล้ววางไฟล์ทับใน `images/` โดยใช้ชื่อเดิม
+ดู [IMAGE-PROMPTS.md](IMAGE-PROMPTS.md) แล้วแปลงเป็น `.jpg` แล้ววางทับใน `images/` โดยใช้ชื่อเดิม
 
 ## เปลี่ยนข้อมูล
 

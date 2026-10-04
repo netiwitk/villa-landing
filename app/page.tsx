@@ -1,12 +1,12 @@
 import Image, { type StaticImageData } from "next/image";
 import type { ReactNode } from "react";
-import bathroom from "@/images/bathroom.png";
-import bedroom from "@/images/bedroom.png";
-import dining from "@/images/dining.png";
-import hero from "@/images/hero.png";
-import living from "@/images/living.png";
-import night from "@/images/night.png";
-import pool from "@/images/pool.png";
+import bathroom from "@/images/bathroom.jpg";
+import bedroom from "@/images/bedroom.jpg";
+import dining from "@/images/dining.jpg";
+import hero from "@/images/hero.jpg";
+import living from "@/images/living.jpg";
+import night from "@/images/night.jpg";
+import pool from "@/images/pool.jpg";
 
 // เว็บตัวอย่าง: ใส่ LINE ID / เบอร์จริงของลูกค้าตรงนี้
 const LINE_ID = "@your-line-id";
