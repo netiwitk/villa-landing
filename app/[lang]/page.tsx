@@ -1,4 +1,6 @@
 import Image, { type StaticImageData } from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import bathroom from "@/images/bathroom.jpg";
 import bedroom from "@/images/bedroom.jpg";
@@ -7,31 +9,21 @@ import hero from "@/images/hero.jpg";
 import living from "@/images/living.jpg";
 import night from "@/images/night.jpg";
 import pool from "@/images/pool.jpg";
+import { dictionaries, hasLocale } from "./dictionaries";
 
 // เว็บตัวอย่าง: ใส่ LINE ID / เบอร์จริงของลูกค้าตรงนี้
 const LINE_ID = "@your-line-id";
 const PHONE = "0X-XXXX-XXXX";
 
-const nav = [
-  ["#villa", "ที่พัก"],
-  ["#amenities", "สิ่งอำนวยความสะดวก"],
-  ["#rooms", "ห้องนอน"],
-  ["#rates", "ราคา"],
-  ["#faq", "คำถาม"],
-];
+const sections = ["villa", "amenities", "rooms", "rates", "faq"] as const;
 
-const facts = [
-  ["ห้องนอน", "3"],
-  ["ห้องน้ำ", "3"],
-  ["ผู้เข้าพัก", "8 ท่าน"],
-  ["สระส่วนตัว", "10 ม."],
-];
-
-const distances = [
-  ["ชายหาด", "เดิน 3 นาที"],
-  ["ร้านสะดวกซื้อ", "500 เมตร"],
-  ["ตลาดโต้รุ่ง", "ขับรถ 10 นาที"],
-  ["กรุงเทพฯ", "ประมาณ 3 ชั่วโมง"],
+// Same order as the dictionary arrays
+const prices = ["7,900", "9,900", "12,900"];
+const shots = [
+  { src: living, className: "col-span-2" },
+  { src: dining, className: "row-span-2" },
+  { src: bedroom, className: "" },
+  { src: bathroom, className: "" },
 ];
 
 const icons = {
@@ -70,44 +62,7 @@ const icons = {
   ),
 };
 
-const amenities: [keyof typeof icons, string, string][] = [
-  ["waves", "สระว่ายน้ำส่วนตัว", "ยาว 10 เมตร ลึก 1.2 เมตร ระบบน้ำเกลือ"],
-  ["sun", "ใกล้ชายหาด", "เดินถึงทะเลใน 3 นาที"],
-  ["flame", "ลาน BBQ", "เตาถ่านพร้อมโต๊ะ 8 ที่นั่ง"],
-  ["utensils", "ครัวพร้อมใช้", "เตา ไมโครเวฟ ตู้เย็นใหญ่ จานชามครบ"],
-  ["wifi", "Wi-Fi 500 Mbps", "ใช้ได้ทั้งในบ้านและริมสระ"],
-  ["parking", "ที่จอดรถ 3 คัน", "จอดในรั้วบ้าน"],
-  ["tv", "Smart TV + Netflix", "ห้องนั่งเล่นและห้องนอนใหญ่"],
-  ["washer", "เครื่องซักผ้า", "พร้อมราวตากผ้า"],
-];
-
-const rooms = [
-  ["ห้องนอนใหญ่", "เตียง King 6 ฟุต", ["อ่างแช่ตัว", "เปิดออกสระได้", "Smart TV"]],
-  ["ห้องนอนที่ 2", "เตียง Queen 5 ฟุต", ["ห้องน้ำในตัว", "ประตูออกสวน"]],
-  ["ห้องนอนที่ 3", "เตียงเดี่ยว 2 เตียง", ["ห้องน้ำในตัว", "เหมาะกับเด็ก"]],
-] as const;
-
-const rates = [
-  ["วันธรรมดา", "อาทิตย์–พฤหัสบดี", "7,900"],
-  ["สุดสัปดาห์", "ศุกร์–เสาร์", "9,900"],
-  ["วันหยุดยาว", "นักขัตฤกษ์ · ขั้นต่ำ 2 คืน", "12,900"],
-];
-
-const included = [
-  "แม่บ้านทำความสะอาดก่อนเข้าพัก",
-  "ผ้าเช็ดตัวและของใช้ในห้องน้ำ",
-  "ถ่านและอุปกรณ์ BBQ",
-  "น้ำดื่มวันละ 12 ขวด",
-];
-
-const faqs = [
-  ["เช็คอินและเช็คเอาท์กี่โมง?", "เช็คอิน 14:00 น. และเช็คเอาท์ 12:00 น. ถ้าไม่มีผู้เข้าพักต่อ ขอเช็คเอาท์ถึง 14:00 น. ได้ฟรี"],
-  ["ต้องมัดจำเท่าไหร่?", "มัดจำ 50% ภายใน 24 ชั่วโมงหลังยืนยันวัน แล้วจ่ายส่วนที่เหลือวันเช็คอิน"],
-  ["ยกเลิกได้มั้ย?", "ยกเลิกก่อนเข้าพัก 14 วันขึ้นไป คืนมัดจำเต็มจำนวน ถ้าน้อยกว่านั้น เลื่อนวันได้ 1 ครั้ง"],
-  ["พาสัตว์เลี้ยงมาได้มั้ย?", "ได้ ไม่เกิน 2 ตัว แต่ต้องแจ้งล่วงหน้าและไม่พาลงสระ"],
-  ["เปิดเพลงได้ถึงกี่โมง?", "เปิดได้ถึง 22:00 น. เพื่อไม่รบกวนเพื่อนบ้าน"],
-  ["มีอาหารเช้ามั้ย?", "ไม่มี แต่มีครัวพร้อมใช้ และมีร้านอาหารเช้าที่เดินไป 5 นาที"],
-];
+const amenityIcons: (keyof typeof icons)[] = ["waves", "sun", "flame", "utensils", "wifi", "parking", "tv", "washer"];
 
 function Icon({ name }: { name: keyof typeof icons }) {
   return (
@@ -157,13 +112,18 @@ function Shot({ src, alt, caption, className = "" }: { src: StaticImageData; alt
   );
 }
 
-export default function Home() {
+export default async function Home({ params }: PageProps<"/[lang]">) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const t = dictionaries[lang];
+  const other = lang === "th" ? "en" : "th";
+
   return (
     <>
       <header className="relative isolate flex min-h-svh flex-col text-white">
         <Image
           src={hero}
-          alt="Pool villa ชั้นเดียวกับสระว่ายน้ำส่วนตัว ยามแดดเย็น"
+          alt={t.hero.alt}
           fill
           placeholder="blur"
           sizes="100vw"
@@ -179,42 +139,51 @@ export default function Home() {
             Saeng Lay
           </a>
           <ul className="hidden gap-8 text-sm text-white/85 lg:flex">
-            {nav.map(([href, label]) => (
-              <li key={href}>
-                <a href={href} className="hover:text-white">
-                  {label}
+            {sections.map((id) => (
+              <li key={id}>
+                <a href={`#${id}`} className="hover:text-white">
+                  {t.nav[id]}
                 </a>
               </li>
             ))}
           </ul>
-          <a
-            href="#contact"
-            className="rounded-full bg-white/15 px-4 py-2 text-sm ring-1 ring-white/40 backdrop-blur hover:bg-white/25"
-          >
-            เช็ควันว่าง
-          </a>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/${other}/`}
+              hrefLang={other}
+              lang={other}
+              aria-label={t.switchTo.aria}
+              className="rounded-full px-3 py-2 text-sm text-white/85 hover:bg-white/10 hover:text-white"
+            >
+              {t.switchTo.label}
+            </Link>
+            <a
+              href="#contact"
+              className="rounded-full bg-white/15 px-4 py-2 text-sm ring-1 ring-white/40 backdrop-blur hover:bg-white/25"
+            >
+              {t.checkDates}
+            </a>
+          </div>
         </nav>
 
         <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-5 pb-10 text-shadow-lg sm:px-8 sm:pb-16">
           <p className="text-sm tracking-[0.25em] text-white/90 uppercase">Private Pool Villa · Hua Hin</p>
           <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-tight sm:text-6xl sm:leading-tight">
-            บ้านริมทะเล
+            {t.hero.title[0]}
             <br />
-            ที่ทั้งหลังเป็นของคุณ
+            {t.hero.title[1]}
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
-            สระส่วนตัว ลาน BBQ และชายหาดที่เดินถึงในสามนาที สำหรับครอบครัวและเพื่อนสูงสุด 8 ท่าน
-          </p>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">{t.hero.body}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#contact" className="rounded-full bg-sand-50 px-6 py-3 font-medium text-sea-900 text-shadow-none hover:bg-white">
-              จองผ่าน LINE
+              {t.hero.book}
             </a>
             <a href="#rates" className="rounded-full px-6 py-3 ring-1 ring-white/50 hover:bg-white/10">
-              ดูราคา
+              {t.hero.rates}
             </a>
           </div>
           <dl className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/20 ring-1 ring-white/20 backdrop-blur-md sm:grid-cols-4">
-            {facts.map(([label, value]) => (
+            {t.facts.map(({ label, value }) => (
               <div key={label} className="bg-black/25 px-5 py-4">
                 <dt className="text-xs text-white/75">{label}</dt>
                 <dd className="mt-1 font-serif text-2xl">{value}</dd>
@@ -227,12 +196,11 @@ export default function Home() {
       <main>
         <section id="villa" className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 md:grid-cols-2 md:items-center md:py-28">
           <div>
-            <Heading eyebrow="ที่พัก" title="ตื่นมาเจอสระ เดินไม่กี่ก้าวถึงทะเล">
-              บ้านชั้นเดียวสไตล์ tropical modern ล้อมด้วยต้นมะพร้าวและลีลาวดี ห้องนั่งเล่นเปิดโล่งต่อกับสระ
-              ทุกห้องนอนมีห้องน้ำในตัว พักกันทั้งครอบครัวได้โดยไม่ต้องใช้สระร่วมกับใคร
+            <Heading eyebrow={t.villa.eyebrow} title={t.villa.title}>
+              {t.villa.body}
             </Heading>
             <dl className="mt-10 divide-y divide-sand-200 border-y border-sand-200">
-              {distances.map(([place, time]) => (
+              {t.villa.distances.map(({ place, time }) => (
                 <div key={place} className="flex justify-between py-3">
                   <dt className="text-muted">{place}</dt>
                   <dd className="font-medium">{time}</dd>
@@ -242,7 +210,7 @@ export default function Home() {
           </div>
           <Image
             src={pool}
-            alt="ริมสระมีเก้าอี้อาบแดดสองตัว ล้อมด้วยต้นไม้เขตร้อน"
+            alt={t.villa.poolAlt}
             placeholder="blur"
             sizes="(min-width: 768px) 50vw, 100vw"
             className="aspect-4/5 w-full rounded-3xl object-cover"
@@ -251,12 +219,12 @@ export default function Home() {
 
         <section id="amenities" className="bg-sand-100">
           <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 md:py-28">
-            <Heading eyebrow="สิ่งอำนวยความสะดวก" title="มีครบ แค่หิ้วกระเป๋ามา" />
+            <Heading eyebrow={t.amenities.eyebrow} title={t.amenities.title} />
             <ul className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
-              {amenities.map(([icon, title, text]) => (
+              {t.amenities.items.map(({ title, text }, i) => (
                 <li key={title} className="rounded-2xl bg-sand-50 p-5 ring-1 ring-sand-200 sm:p-6">
                   <span className="inline-flex size-11 items-center justify-center rounded-full bg-sea-800 text-sand-50">
-                    <Icon name={icon} />
+                    <Icon name={amenityIcons[i]} />
                   </span>
                   <h3 className="mt-4 font-medium">{title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-muted">{text}</p>
@@ -267,12 +235,11 @@ export default function Home() {
         </section>
 
         <section id="gallery" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 md:py-28">
-          <Heading eyebrow="แกลเลอรี" title="มุมโปรดของแขกที่มาพัก" />
+          <Heading eyebrow={t.gallery.eyebrow} title={t.gallery.title} />
           <div className="mt-12 grid auto-rows-44 grid-cols-2 gap-3 sm:auto-rows-64 md:grid-cols-3 md:gap-4">
-            <Shot src={living} alt="ห้องนั่งเล่นเปิดโล่ง ประตูกระจกบานใหญ่ต่อกับสระ" caption="ห้องนั่งเล่น" className="col-span-2" />
-            <Shot src={dining} alt="ศาลากลางแจ้งมีโต๊ะไม้แปดที่นั่งและไฟประดับยามค่ำ" caption="ลาน BBQ ยามค่ำ" className="row-span-2" />
-            <Shot src={bedroom} alt="ห้องนอนใหญ่ เตียงคิงไซซ์ผ้าปูสีขาว หัวเตียงไม้สัก" caption="ห้องนอนใหญ่" />
-            <Shot src={bathroom} alt="ห้องน้ำกึ่งกลางแจ้งมีอ่างหินและต้นไม้" caption="ห้องน้ำกึ่ง outdoor" />
+            {t.gallery.shots.map(({ caption, alt }, i) => (
+              <Shot key={caption} src={shots[i].src} alt={alt} caption={caption} className={shots[i].className} />
+            ))}
           </div>
         </section>
 
@@ -280,11 +247,11 @@ export default function Home() {
           <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 md:py-28">
             <p className="flex items-center gap-3 text-sm font-medium text-clay-400">
               <span className="h-px w-8 bg-clay-400" aria-hidden="true" />
-              ห้องนอน
+              {t.rooms.eyebrow}
             </p>
-            <h2 className="mt-3 font-serif text-3xl leading-snug text-balance sm:text-4xl">3 ห้องนอน ห้องน้ำในตัวทุกห้อง</h2>
+            <h2 className="mt-3 font-serif text-3xl leading-snug text-balance sm:text-4xl">{t.rooms.title}</h2>
             <ol className="mt-12 grid gap-4 md:grid-cols-3">
-              {rooms.map(([name, bed, features], i) => (
+              {t.rooms.items.map(({ name, bed, features }, i) => (
                 <li key={name} className="rounded-2xl bg-white/5 p-6 ring-1 ring-white/10">
                   <span className="font-serif text-4xl text-clay-400">0{i + 1}</span>
                   <h3 className="mt-4 text-lg font-medium">{name}</h3>
@@ -297,31 +264,31 @@ export default function Home() {
                 </li>
               ))}
             </ol>
-            <p className="mt-6 text-sm text-sand-200/80">เสริมที่นอนได้อีก 2 ชุด ไม่มีค่าใช้จ่าย</p>
+            <p className="mt-6 text-sm text-sand-200/80">{t.rooms.note}</p>
           </div>
         </section>
 
         <section id="rates" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 md:py-28">
-          <Heading eyebrow="ราคา" title="ราคาต่อคืน ทั้งหลัง">
-            ราคานี้สำหรับผู้เข้าพักไม่เกิน 8 ท่าน ท่านที่ 9–10 เพิ่มท่านละ 500 บาท
+          <Heading eyebrow={t.rates.eyebrow} title={t.rates.title}>
+            {t.rates.body}
           </Heading>
           <ul className="mt-12 grid gap-4 md:grid-cols-3">
-            {rates.map(([name, days, price]) => (
+            {t.rates.items.map(({ name, days }, i) => (
               <li key={name} className="rounded-2xl p-6 ring-1 ring-sand-200">
                 <h3 className="font-medium">{name}</h3>
                 <p className="text-sm text-muted">{days}</p>
                 <p className="mt-6 font-serif text-4xl text-sea-800">
-                  ฿{price}
-                  <span className="ml-1 font-sans text-sm text-muted">/ คืน</span>
+                  ฿{prices[i]}
+                  <span className="ml-1 font-sans text-sm text-muted">{t.rates.perNight}</span>
                 </p>
               </li>
             ))}
           </ul>
           <div className="mt-8 grid gap-6 rounded-2xl bg-sand-100 p-6 sm:grid-cols-2 sm:p-8">
             <div>
-              <h3 className="font-medium">รวมในราคาแล้ว</h3>
+              <h3 className="font-medium">{t.rates.includedTitle}</h3>
               <ul className="mt-3 space-y-2 text-sm text-muted">
-                {included.map((item) => (
+                {t.rates.included.map((item) => (
                   <li key={item} className="flex gap-2">
                     <span className="text-sea-700" aria-hidden="true">✓</span>
                     {item}
@@ -330,19 +297,17 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h3 className="font-medium">เงินประกัน</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted">
-                3,000 บาท จ่ายวันเช็คอิน และได้คืนเต็มจำนวนตอนเช็คเอาท์ ถ้าไม่มีความเสียหาย
-              </p>
+              <h3 className="font-medium">{t.rates.depositTitle}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted">{t.rates.deposit}</p>
             </div>
           </div>
         </section>
 
         <section id="faq" className="bg-sand-100">
           <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 sm:px-8 md:grid-cols-[1fr_2fr] md:py-28">
-            <Heading eyebrow="คำถามที่พบบ่อย" title="ก่อนจอง" />
+            <Heading eyebrow={t.faq.eyebrow} title={t.faq.title} />
             <div className="divide-y divide-sand-200 border-y border-sand-200">
-              {faqs.map(([q, a]) => (
+              {t.faq.items.map(({ q, a }) => (
                 <details key={q} className="group py-5">
                   <summary className="flex cursor-pointer items-center justify-between gap-4 font-medium">
                     {q}
@@ -361,17 +326,15 @@ export default function Home() {
           <Image src={night} alt="" fill placeholder="blur" sizes="100vw" className="-z-10 object-cover" />
           <div className="absolute inset-0 -z-10 bg-sea-900/70" />
           <div className="mx-auto max-w-6xl px-5 py-24 text-center sm:px-8 md:py-32">
-            <h2 className="font-serif text-3xl sm:text-5xl">ว่างวันไหน ทักมาถามได้เลย</h2>
-            <p className="mx-auto mt-4 max-w-lg text-white/85">
-              ส่งวันที่และจำนวนผู้เข้าพักมาทาง LINE ตอบภายใน 15 นาที (08:00–22:00 น.)
-            </p>
+            <h2 className="font-serif text-3xl text-balance sm:text-5xl">{t.contact.title}</h2>
+            <p className="mx-auto mt-4 max-w-lg text-white/85">{t.contact.body}</p>
             <dl className="mx-auto mt-10 grid max-w-xl gap-3 sm:grid-cols-2">
               <div className="rounded-2xl bg-white/10 px-6 py-5 ring-1 ring-white/20 backdrop-blur">
                 <dt className="text-sm text-white/75">LINE</dt>
                 <dd className="mt-1 text-xl font-medium">{LINE_ID}</dd>
               </div>
               <div className="rounded-2xl bg-white/10 px-6 py-5 ring-1 ring-white/20 backdrop-blur">
-                <dt className="text-sm text-white/75">โทร</dt>
+                <dt className="text-sm text-white/75">{t.contact.phone}</dt>
                 <dd className="mt-1 text-xl font-medium">{PHONE}</dd>
               </div>
             </dl>
